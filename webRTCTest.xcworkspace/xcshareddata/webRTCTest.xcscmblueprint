@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9" : 0,
+    "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "23E59112-658C-42A8-918A-BA42CE4A2073",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9" : "webRTCTest_Data",
+    "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3" : "Licode-ErizoClientIOS\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "webRTCTest",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "webRTCTest.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/zevarito\/Licode-ErizoClientIOS.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/kalvish\/apprtc_ios_datatest.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9"
+    }
+  ]
+}
