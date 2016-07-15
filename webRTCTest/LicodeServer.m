@@ -40,8 +40,8 @@ static NSString *kLicodeServerTokenJSONField = @"";
 //							   @"ashar":username
 //							   };
     NSDictionary *postData = @{
-                               @"role": @"presenter",
-                               @"roomId":@"5786118a2cb61e618cbc1751", //default came 56bb46efc61d88361edb4dc6
+                               @"role": @"presenter", //viewerWithData, viewer
+                               @"roomId":@"5786120ad8de1b196af9449b", //default came 56bb46efc61d88361edb4dc6
                                @"username":username
                                };
     

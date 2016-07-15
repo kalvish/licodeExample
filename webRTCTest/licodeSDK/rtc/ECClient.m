@@ -22,6 +22,8 @@
 #import "RTCICECandidate+JSON.h"
 #import "RTCSessionDescription+JSON.h"
 
+
+
 // Special log for client that appends streamId
 
 #define C_L_DEBUG(f, ...) { \
@@ -54,10 +56,17 @@ static NSInteger const kECAppClientErrorSetSDP = -4;
 //static NSInteger const kECAppClientErrorInvalidClient = -5;
 //static NSInteger const kECAppClientErrorInvalidRoom = -6;
 
+@interface ECClient() <RTCDataChannelDelegate>
+
+
+@end
+
 @implementation ECClient {
     ECClientState state;
     NSString *currentStreamId;
 }
+
+@synthesize dataChannel = _dataChannel;
 
 - (instancetype)init {
     if (self = [super init]) {
@@ -120,14 +129,31 @@ static NSInteger const kECAppClientErrorSetSDP = -4;
     return constraints;
 }
 
+- (RTCMediaConstraints *)defaultDataConnectionConstraints {
+    NSArray *mandatoryConstraints = @[
+                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveAudio" value:@"false"],
+                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveVideo" value:@"false"]
+                                      ];
+
+    NSArray *optionalConstraints = @[
+                                     [[RTCPair alloc] initWithKey:@"internalSctpDataChannels" value:@"true"],
+                                     [[RTCPair alloc] initWithKey:@"DtlsSrtpKeyAgreement" value:@"true"]
+                                     ];
+    RTCMediaConstraints* constraints =
+    [[RTCMediaConstraints alloc]
+     initWithMandatoryConstraints:mandatoryConstraints
+     optionalConstraints:optionalConstraints];
+    return constraints;
+}
+
 - (RTCMediaConstraints *)defaultAnswerConstraints {
     return [self defaultOfferConstraints];
 }
 
 - (RTCMediaConstraints *)defaultOfferConstraints {
     NSArray *mandatoryConstraints = @[
-                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveAudio" value:@"true"],
-                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveVideo" value:@"true"]
+                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveAudio" value:@"false"],
+                                      [[RTCPair alloc] initWithKey:@"OfferToReceiveVideo" value:@"false"]
                                       ];
     RTCMediaConstraints* constraints =
     [[RTCMediaConstraints alloc]
@@ -283,10 +309,27 @@ static NSInteger const kECAppClientErrorSetSDP = -4;
 }
 
 - (void)peerConnection:(RTCPeerConnection*)peerConnection
-    didOpenDataChannel:(RTCDataChannel*)dataChannel {
+    didOpenDataChannel:(RTCDataChannel*)newDataChannel {
     dispatch_async(dispatch_get_main_queue(), ^{
         C_L_DEBUG(@"DataChannel Did open DataChannel");
     });
+    
+    if (_dataChannel)
+    {
+        // Replacing the previous connection, so disable delegate messages from the old instance
+        _dataChannel.delegate = nil;
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //Respoke
+            // This callback will not be called in this test. It is only triggered when adding a directConnection to an existing call, which is currently not supported.
+            //  [self.delegate onStart:self];
+        });
+    }
+    
+    _dataChannel = newDataChannel;
+    _dataChannel.delegate = self;
 }
 
 #
@@ -358,6 +401,47 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
     });
 }
 
+#pragma mark - RTCDataChannelDelegate
+// Called when the data channel state has changed.
+- (void)channelDidChangeState:(RTCDataChannel*)channel {
+    switch (channel.state)
+    {
+        case kRTCDataChannelStateConnecting:
+            NSLog(@"Direct connection CONNECTING");
+            break;
+            
+        case kRTCDataChannelStateOpen:
+        {
+            NSLog(@"Direct connection OPEN");
+            //[call directConnectionDidOpen:self];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //[self.delegate onOpen:self];
+            });
+        }
+            break;
+            
+        case kRTCDataChannelStateClosing:
+            NSLog(@"Direct connection CLOSING");
+            break;
+            
+        case kRTCDataChannelStateClosed:
+        {
+            NSLog(@"Direct connection CLOSED");
+            _dataChannel = nil;
+            //[call directConnectionDidClose:self];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //[self.delegate onClose:self];
+            });
+        }
+            break;
+    }
+}
+
+-(void)channel:(RTCDataChannel *)channel didReceiveMessageWithBuffer:(RTCDataBuffer *)buffer {
+    int a = 0;
+}
+
+
 # 
 # pragma mark - Private
 #
@@ -391,12 +475,18 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
     return newSDPString;
 }
 
+- (BOOL)isActive
+{
+    return (_dataChannel && (_dataChannel.state == kRTCDataChannelStateOpen));
+}
+
 - (void)startPublishSignaling {
     C_L_INFO(@"Start publish signaling");
     self.state = ECClientStateConnecting;
     
     C_L_INFO(@"Creating PeerConnection");
-    RTCMediaConstraints *constraints = [self defaultPeerConnectionConstraints];
+    //RTCMediaConstraints *constraints = [self defaultPeerConnectionConstraints];
+    RTCMediaConstraints *constraints = [self defaultDataConnectionConstraints];
     RTCConfiguration *config = [[RTCConfiguration alloc] init];
     config.iceServers = _iceServers;
     _peerConnection = [_factory peerConnectionWithConfiguration:config
@@ -404,11 +494,18 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
                                                        delegate:self];
     
     C_L_INFO(@"Adding local media stream to PeerConnection");
-    _localStream = [self.delegate streamToPublishByAppClient:self];
-    [_peerConnection addStream:_localStream];
+    //_localStream = [self.delegate streamToPublishByAppClient:self];
+    //[_peerConnection addStream:_localStream];
+    
+    //Create data channel
+    RTCDataChannelInit *initData = [[RTCDataChannelInit alloc] init];
+    _dataChannel = [_peerConnection createDataChannelWithLabel:@"BoardPACDataChannel" config:initData];
+    _dataChannel.delegate = self;
     
     [_peerConnection createOfferWithDelegate:self
                                  constraints:[self defaultOfferConstraints]];
+//    [_peerConnection createOfferWithDelegate:self
+//                                 constraints:[self defaultDataConnectionConstraints]];
 }
 
 - (void)startSubscribeSignaling {
@@ -416,15 +513,23 @@ didCreateSessionDescription:(RTCSessionDescription *)sdp
     self.state = ECClientStateConnecting;
     
     C_L_INFO(@"Creating PeerConnection");
-    RTCMediaConstraints *constraints = [self defaultPeerConnectionConstraints];
+    //RTCMediaConstraints *constraints = [self defaultPeerConnectionConstraints];
+    RTCMediaConstraints *constraints = [self defaultDataConnectionConstraints];
     RTCConfiguration *config = [[RTCConfiguration alloc] init];
     config.iceServers = _iceServers;
     _peerConnection = [_factory peerConnectionWithConfiguration:config
                                                     constraints:constraints
                                                        delegate:self];
     
+    //Create data channel
+//    RTCDataChannelInit *initData = [[RTCDataChannelInit alloc] init];
+//    _dataChannel = [_peerConnection createDataChannelWithLabel:@"BoardPACDataChannel" config:initData];
+//    _dataChannel.delegate = self;
+    
     [_peerConnection createOfferWithDelegate:self
                                  constraints:[self defaultOfferConstraints]];
+//    [_peerConnection createOfferWithDelegate:self
+//                                 constraints:[self defaultDataConnectionConstraints]];
 }
 
 - (void)drainMessageQueueIfReady {

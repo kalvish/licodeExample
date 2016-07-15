@@ -68,8 +68,9 @@ static CGFloat vHeight = 120.0;
                                  };
     
     // We get connected and ready to publish, so publish.
-    [remoteRoom publish:localStream withOptions:@{@"data": @FALSE, @"attributes": attributes}];
-    
+    //[remoteRoom publish:localStream withOptions:@{@"data": @FALSE, @"attributes": attributes}];
+     [remoteRoom publish:localStream withOptions:@{@"data": @TRUE, @"attributes": attributes}];
+    //[remoteRoom subscribe:@"sdf"];
     // We get connected and ready to publish, so publish.
     //[remoteRoom publish:localStream withOptions:nil];
 }

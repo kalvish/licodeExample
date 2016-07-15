@@ -1,16 +1,18 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "A72D18E6C5A735C89BDB1F878C948CD162489712",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9" : 0,
-    "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3" : 0
+    "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3" : 0,
+    "A72D18E6C5A735C89BDB1F878C948CD162489712" : 0,
+    "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "23E59112-658C-42A8-918A-BA42CE4A2073",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9" : "webRTCTest_Data",
-    "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3" : "Licode-ErizoClientIOS\/"
+    "26F1A6789E17D7EF5C4A2E0C55372A1C92037CA3" : "Licode-ErizoClientIOS\/",
+    "A72D18E6C5A735C89BDB1F878C948CD162489712" : "licodeExample\/",
+    "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9" : "webRTCTest_Data"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "webRTCTest",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -25,6 +27,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/kalvish\/apprtc_ios_datatest.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "5E985EBA7F06724FC771EB610F0A3694FAB9CAF9"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/kalvish\/licodeExample.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A72D18E6C5A735C89BDB1F878C948CD162489712"
     }
   ]
 }

@@ -80,7 +80,8 @@
 	// Publishing options
 	int videoCount = (int) stream.mediaStream.videoTracks.count;
 	int audioCount = (int) stream.mediaStream.audioTracks.count;
-	
+    //videoCount = 0;
+    //audioCount = 0;
 	NSDictionary *opts = @{
 						   @"video": videoCount > 0 ? @"true" : @"false",
 						   @"audio": audioCount > 0 ? @"true" : @"false",

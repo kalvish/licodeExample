@@ -12,6 +12,8 @@
 #import "RTCVideoTrack.h"
 #import "ECSignalingChannel.h"
 
+#import "RTCDataChannel.h"
+
 static NSMutableArray *sdpReplacements;
 static NSString *preferredVideoCodec;
 static NSString *defaultVideoCodec = @"VP8";
@@ -76,6 +78,7 @@ extern NSString* clientStateToString(ECClientState state);
 @property (nonatomic, readonly) NSDictionary *serverConfiguration;
 @property (strong, nonatomic) RTCMediaStream *localStream;
 
+@property(nonatomic, strong) RTCDataChannel *dataChannel;
 ///-----------------------------------
 /// @name Initializers
 ///-----------------------------------
